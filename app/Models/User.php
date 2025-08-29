@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        //'email',
         'password',
     ];
 
@@ -30,6 +31,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'username',
         'password',
         'remember_token',
     ];
@@ -39,10 +41,19 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+    protected function setUsernameAttribute($value): void
+    {
+        if (!empty($value)) {
+            $this->attributes['username'] = hash('sha256', strtolower($value));
+        }
+    }
+
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            //'username' => 'hashed',
+            //'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
