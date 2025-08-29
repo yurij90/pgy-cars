@@ -5,12 +5,14 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth')]
+class extends Component {
     public string $name = '';
-    public string $email = '';
+    public string $username = '';
     public string $password = '';
     public string $password_confirmation = '';
 
@@ -19,27 +21,33 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     public function register(): void
     {
+        $originalUsername = $this->username;
+        $this->username = (hash('sha256', $originalUsername));
+
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'username' => ['required', 'string', 'lowercase', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'string', 'confirmed', Rules\Password::min(8)->max(255)->mixedCase()->numbers()->symbols()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
+        $this->username = $originalUsername;
         event(new Registered(($user = User::create($validated))));
 
         Auth::login($user);
 
         $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+
     }
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <x-auth-header :title="__('Create an account')"
+                   :description="__('Enter your details below to create your account')"/>
 
     <!-- Session Status -->
-    <x-auth-session-status class="text-center" :status="session('status')" />
+    <x-auth-session-status class="text-center" :status="session('status')"/>
 
     <form method="POST" wire:submit="register" class="flex flex-col gap-6">
         <!-- Name -->
@@ -53,14 +61,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
             :placeholder="__('Full name')"
         />
 
-        <!-- Email Address -->
+        <!-- Username -->
         <flux:input
-            wire:model="email"
-            :label="__('Email address')"
-            type="email"
+            wire:model="username"
+            :label="__('Username')"
+            type="text"
             required
-            autocomplete="email"
-            placeholder="email@example.com"
+            autocomplete="username"
+            placeholder="Username"
         />
 
         <!-- Password -->
