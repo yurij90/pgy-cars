@@ -1,7 +1,7 @@
 # Inputs
-$name = Read-Host "Add meg a teljes nevet"
-$username = Read-Host "Add meg a felhasználónevet"
-$password = Read-Host "Add meg a jelszót"
+$name = Read-Host "Enter full name: "
+$username = Read-Host "Enter username: "
+$password = Read-Host "Enter password: "
 $username = $username.ToLower()
 
 # File paths
@@ -29,7 +29,8 @@ $regex = [regex]::new($pattern, [System.Text.RegularExpressions.RegexOptions]::S
 $updated = $regex.Replace($content, $newBlock, 1)
 
 # Write file
-$updated | Set-Content $seederFile -Encoding utf8NoBOM
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText((Resolve-Path $seederFile), $updated, $utf8NoBom)
 
 # Creating empty SQLite file
 if (-Not (Test-Path ".\database")) {
@@ -42,7 +43,8 @@ Write-Host "UserSeeder.php updated, SQLite file created."
 # Starting project
 Write-Host "Starting project..."
 Invoke-Expression "composer install"
-Invoke-Expression "npm install && npm run build"
+Invoke-Expression "npm install"
+Invoke-Expression "npm run build"
 
 # .env check
 if (-Not (Test-Path ".env")) {
