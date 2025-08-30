@@ -40,7 +40,9 @@ fi
 
 php artisan migrate
 
-npm install && npm run build
+npm install
+
+npm run build
 
 php artisan migrate:fresh --seed
 
