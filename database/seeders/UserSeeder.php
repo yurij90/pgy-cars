@@ -24,5 +24,11 @@ class UserSeeder extends Seeder
             'username' => 'test',
             'password' => 'test',
         ]);
+
+        User::factory()->create([
+            'name' => 'Inactive User',
+            'username' => 'inactive',
+            'password' => 'inactive',
+        ]);
     }
 }
