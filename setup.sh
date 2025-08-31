@@ -38,11 +38,11 @@ if [ ! -f ".env" ]; then
   php artisan key:generate
 fi
 
-php artisan migrate
-
 npm install
 
 npm run build
+
+php artisan migrate
 
 php artisan migrate:fresh --seed
 
