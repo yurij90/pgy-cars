@@ -54,7 +54,7 @@ if (-not (Is-Installed "composer")) {
     Write-Host "Composer is already installed."
 }
 # Check winget
-if (-not (Is-Installed "node") -and -not (Is-Installed "winget")) {
+if (-not (Is-Installed "node") -or -not (Is-Installed "git") -and -not (Is-Installed "winget")) {
     Write-Host "`nWinGet not found. Installing WinGet PowerShell module..."
     try {
         $progressPreference = 'silentlyContinue'
@@ -107,6 +107,37 @@ if (-not (Is-Installed "node")) {
     }
 } else {
     Write-Host "Node.js is installed."
+}
+
+#Check git
+# Check if Git CLI is installed
+if (-not (Is-Installed "git")) {
+    Write-Host "Git CLI not found. Installing via WinGet..."
+
+    try {
+        # Install Git using WinGet
+        winget install --id Git.Git -e --source winget
+
+        # Git installation path
+        $gitPath = 'C:\Program Files\Git\cmd'
+
+        # Add Git to current session PATH
+        $env:PATH += ";$gitPath"
+
+        # Add Git to global PATH (Machine scope)
+        $currentPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)
+        if (-not ($currentPath -like "*$gitPath*")) {
+            [Environment]::SetEnvironmentVariable("Path", "$currentPath;$gitPath", [EnvironmentVariableTarget]::Machine)
+        }
+
+        Write-Host "Git CLI has been installed and added to PATH."
+    }
+    catch {
+        Write-Host "Git installation failed. Please install it manually from https://git-scm.com/download/win"
+        Start-Process "https://git-scm.com/download/win"
+    }
+} else {
+    Write-Host "Git CLI is already installed."
 }
 
 Write-Host "`nDependency check completed."
