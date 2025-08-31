@@ -8,7 +8,6 @@ use Livewire\Volt\Component;
 
 new class extends Component {
     public string $name = '';
-    public string $email = '';
 
     /**
      * Mount the component.
@@ -16,7 +15,6 @@ new class extends Component {
     public function mount(): void
     {
         $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
     }
 
     /**
@@ -28,32 +26,26 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id)
-            ],
         ]);
 
         $user->fill($validated);
 
-        if ($user->isDirty('email')) {
+        /*if ($user->isDirty('email')) {
             $user->email_verified_at = null;
-        }
+        }*/
 
         $user->save();
 
         $this->dispatch('profile-updated', name: $user->name);
+
+        $this->js('window.location.reload()');
+
     }
 
     /**
      * Send an email verification notification to the current user.
      */
-    public function resendVerificationNotification(): void
+    /*public function resendVerificationNotification(): void
     {
         $user = Auth::user();
 
@@ -66,18 +58,18 @@ new class extends Component {
         $user->sendEmailVerificationNotification();
 
         Session::flash('status', 'verification-link-sent');
-    }
+    }*/
 }; ?>
 
 <section class="w-full">
     @include('partials.settings-heading')
 
-    <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
+    <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
-            <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+            {{-- <div>
+                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>
@@ -96,7 +88,7 @@ new class extends Component {
                         @endif
                     </div>
                 @endif
-            </div>
+            </div> --}}
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">

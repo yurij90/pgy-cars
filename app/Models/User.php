@@ -78,4 +78,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(FavoriteCar::class);
     }
+
+    /**
+     * Admin check
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
