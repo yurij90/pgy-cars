@@ -21,8 +21,8 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'username' => 'test',
-            'password' => 'test',
+            'username' => 'user',
+            'password' => 'user',
         ]);
 
         User::factory()->create([
