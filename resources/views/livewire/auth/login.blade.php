@@ -28,7 +28,13 @@ class extends Component {
     public function login(): void
     {
         $hashedUsername = hash('sha256', $this->username);
-        $user = User::where('username', $hashedUsername)->first();
+        $user = User::withTrashed()->where('username', $hashedUsername)->first();
+
+        if ($user->deleted_at !== null) {
+            throw ValidationException::withMessages([
+                'username' => 'Your account deletion is currently pending. Please contact an administrator for assistance.',
+            ]);
+        }
 
         if (!empty($user) && !$user->isActive) {
             throw ValidationException::withMessages([
