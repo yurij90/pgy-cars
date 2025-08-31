@@ -29,6 +29,7 @@ class UserSeeder extends Seeder
             'name' => 'Inactive User',
             'username' => 'inactive',
             'password' => 'inactive',
+            'isActive' => false,
         ]);
     }
 }
