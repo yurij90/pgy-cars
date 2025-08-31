@@ -82,21 +82,44 @@ The application has been built with security in mind (password hashing with salt
 ## ⚙️ Installation
 
 - **Requirements**
-    - [PHP 8.1+](https://www.php.net/downloads)
+    - [Git](https://git-scm.com/downloads)
+    - [PHP](https://www.php.net/downloads)
     - [Composer](https://getcomposer.org/download/)
-    - [MySQL](https://dev.mysql.com/downloads/) / [SQLite](https://www.sqlite.org/download.html)
     - [Node.js](https://nodejs.org/en/download/)
+
 
 - **Requirements** installation using script (only Windows Powershell)
 ```powershell
-   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force; .\install.ps1 
+    #Powershell (Windows)
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yurij90/pgy-cars/refs/heads/master/install.ps1" -OutFile ".\install.ps1"
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force; .\install.ps1 
 ```
 
-### 1️⃣ Manual Setup
+### 1️⃣ Automatic Setup (Script)
+
+**The script will ask for an admin user at startup!**
+
+You can run a setup script to automatically configure the environment, create the database, run migrations, and seed default users.
+
+- **Powershell (Windows):**
+```powershell
+git clone https://github.com/yurij90/pgy-cars.git
+cd pgy-cars
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force; .\setup.ps1
+```
+
+- **Bash (Linux/macOS, Git Bash):**
+```bash
+git clone https://github.com/yurij90/pgy-cars.git
+cd pgy-cars
+./setup.sh
+```
+
+### 2️⃣ Manual Setup
 
 1. **Clone and install**
    ```powershell
-   #Powershell
+   #Powershell (Windows)
    git clone https://github.com/yurij90/pgy-cars.git
    cd pgy-cars
    composer install
@@ -106,7 +129,7 @@ The application has been built with security in mind (password hashing with salt
    php artisan key:generate
    ```
    ```bash
-   #Bash
+   #Bash (Linux/macOS, Git Bash)
    git clone https://github.com/yurij90/pgy-cars.git
    cd pgy-cars
    composer install
@@ -116,14 +139,10 @@ The application has been built with security in mind (password hashing with salt
    php artisan key:generate
    ```
 
-2. **Database setup**
+2. **Database setup and server startup**
    ```bash
-   php artisan migrate
+   php artisan migrate #creating empty sqlite
    php artisan migrate --seed
-   ```
-
-3. **Run the server**
-   ```bash
    composer run dev
    ```
    The app will be available at: [http://localhost:8000](http://localhost:8000)
@@ -136,7 +155,7 @@ Default **user** account:
 - Password: user
 
 
-Default **admin** account: (only works if you have **not** run the setup script)
+Default **admin** account: (only works if you have **NOT** run the setup script)
 
 - Username: admin
 - Password: admin
