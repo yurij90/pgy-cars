@@ -21,7 +21,7 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Admin menu')" class="grid">
                     <flux:navlist.item icon="stop" :href="route('admin.users')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
-                    <flux:navlist.item icon="pause" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Cars') }}</flux:navlist.item>
+                    <flux:navlist.item icon="pause" :href="route('admin.cars')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Cars') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
             @endif
