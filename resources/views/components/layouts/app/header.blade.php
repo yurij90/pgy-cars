@@ -104,10 +104,10 @@
                 </flux:navlist.group>
                 @if(auth()->user()->isAdmin())
                 <flux:navlist.group :heading="__('Admin menu')">
-                    <flux:navlist.item icon="layout-grid" :href="route('admin.users')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Users') }}
                     </flux:navlist.item>
-                    <flux:navlist.item icon="layout-grid" :href="route('admin.cars')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Cars') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
