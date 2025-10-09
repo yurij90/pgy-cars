@@ -31,6 +31,7 @@ class extends Component {
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['username'] = hash('sha256', $validated['username']);
 
         $this->username = $originalUsername;
         event(new Registered(($user = User::create($validated))));
