@@ -1,20 +1,23 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm
 
-RUN apk add --no-cache bash curl libzip-dev oniguruma-dev libxml2-dev autoconf gcc g++ make pkgconf \
-    && docker-php-ext-install mbstring zip pdo_mysql bcmath xml tokenizer fileinfo curl openssl
+RUN apt-get update && apt-get install -y \
+    libzip-dev libonig-dev libxml2-dev unzip curl git zip \
+    && docker-php-ext-install mbstring zip pdo_mysql bcmath xml \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Node.js telepítése hivatalos tarballból
 RUN curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
 
 WORKDIR /var/www/html
 
 COPY . .
 
+# Composer telepítése
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN composer install --no-dev --optimize-autoloader
 
 RUN npm install
-
 RUN npm run build
 
 RUN php artisan key:generate \
