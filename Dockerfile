@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-EXPOSE 80
+EXPOSE 10000
 
 RUN apt-get update && apt-get install -y \
     libzip-dev libonig-dev libxml2-dev unzip curl git zip \
