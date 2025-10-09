@@ -17,7 +17,7 @@ RUN cp .env.example .env
 # Composer telepítése
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 RUN npm install
 RUN npm run build
