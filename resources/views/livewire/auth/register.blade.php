@@ -21,28 +21,20 @@ class extends Component {
      */
     public function register(): void
     {
-        $originalUsername = strtolower($this->username);
-        $hashedUsername = hash('sha256', $originalUsername);
-
-        if(User::where('username', $hashedUsername)->exists()) {
-            $this->addError('username', 'This username is already taken.');
-            return;
-        }
+        $originalUsername = $this->username;
+        $this->username = (hash('sha256', $originalUsername));
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255'], // egyediséget manuálisan ellenőrizzük
+            'username' => ['required', 'string', 'lowercase', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::min(8)->max(255)->mixedCase()->numbers()->symbols()],
         ]);
 
-        $validated['username'] = $hashedUsername;
         $validated['password'] = Hash::make($validated['password']);
 
         $this->username = $originalUsername;
+        event(new Registered(($user = User::create($validated))));
 
-        $user = User::create($validated);
-
-        event(new Registered($user));
         Auth::login($user);
 
         $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
