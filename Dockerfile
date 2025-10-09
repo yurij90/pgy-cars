@@ -1,18 +1,19 @@
-FROM node:20.19-alpine as node-builder
+FROM laravelsail/php82-composer
 
-WORKDIR /app
-
-RUN apk add --no-cache php81 php81-phar php81-openssl php81-mbstring php81-xml php81-tokenizer php81-curl php81-fileinfo php81-iconv php81-session php81-dom php81-zip curl unzip
-
-COPY composer.json composer.lock ./
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN composer install --no-dev --no-interaction --prefer-dist
-
-COPY package*.json ./
-RUN npm install
+WORKDIR /var/www/html
 
 COPY . .
 
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install
 RUN npm run build
+
+RUN php artisan key:generate \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan migrate --force \
+    && php artisan migrate --seed
+
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+CMD ["php-fpm"]
