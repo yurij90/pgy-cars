@@ -27,7 +27,7 @@ class extends Component {
      */
     public function login(): void
     {
-        $hashedUsername = hash('sha256', $this->username);
+        $hashedUsername = hash('sha256', strtolower($this->username));
         $user = User::withTrashed()->where('username', $hashedUsername)->first();
 
         if (!$user) {
