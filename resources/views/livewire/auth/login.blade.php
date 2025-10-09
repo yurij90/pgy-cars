@@ -30,6 +30,12 @@ class extends Component {
         $hashedUsername = hash('sha256', $this->username);
         $user = User::withTrashed()->where('username', $hashedUsername)->first();
 
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'username' => 'Invalid credentials.',
+            ]);
+        }
+        
         if ($user->deleted_at !== null) {
             throw ValidationException::withMessages([
                 'username' => 'Your account deletion is currently pending. Please contact an administrator for assistance.',
