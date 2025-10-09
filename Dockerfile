@@ -1,5 +1,5 @@
 # 1. stage: Node.js build hivatalos node:20.17-alpine image használatával
-FROM node:20.17-alpine as node-builder
+FROM node:20.19-alpine as node-builder
 
 WORKDIR /app
 
