@@ -20,9 +20,11 @@ ENV WEBROOT=/var/www/html/public
 RUN composer install --no-dev --optimize-autoloader && \
     npm install && \
     npm run build && \
+    php artisan key:generate \
     php artisan config:cache && \
     php artisan route:cache && \
-    php artisan migrate --force
+    php artisan migrate --force \
+    php artisan migrate --seed
 
 RUN chown -R nginx:nginx /var/www/html/storage /var/www/html/bootstrap/cache
 
