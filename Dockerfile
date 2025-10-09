@@ -32,6 +32,8 @@ RUN php artisan key:generate \
     && php artisan migrate --seed
 
 RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chown -R www-data:www-data database storage bootstrap/cache
+RUN chmod -R 755 database storage bootstrap/cache
 
 # Nginx konfiguráció másolása (ellenőrizd, legyen nginx.conf a projektben)
 COPY ./nginx.conf /etc/nginx/nginx.conf
