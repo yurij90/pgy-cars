@@ -12,6 +12,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN cp .env.example .env
+
 # Composer telepítése
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
