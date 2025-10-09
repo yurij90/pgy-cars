@@ -1,9 +1,10 @@
 FROM php:8.2-fpm
 
-EXPOSE 10000
+EXPOSE 80
 
+# Telepítjük az Nginx-et és a szükséges csomagokat, PHP extensionöket
 RUN apt-get update && apt-get install -y \
-    libzip-dev libonig-dev libxml2-dev unzip curl git zip \
+    nginx libzip-dev libonig-dev libxml2-dev unzip curl git zip \
     && docker-php-ext-install mbstring zip pdo_mysql bcmath xml \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -32,4 +33,8 @@ RUN php artisan key:generate \
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-CMD ["php-fpm"]
+# Nginx konfiguráció másolása (ellenőrizd, legyen nginx.conf a projektben)
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+# Indító scriptként indítjuk az nginx-et és a php-fpm-et
+CMD service nginx start && php-fpm -F
