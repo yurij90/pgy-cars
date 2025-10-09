@@ -26,15 +26,15 @@ class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'lowercase', 'max:255', 'unique:' . User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::min(8)->max(255)->mixedCase()->numbers()->symbols()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered(($user = User::create($validated))));
-        
         $this->username = $originalUsername;
+        
+        event(new Registered(($user = User::create($validated))));
         
         Auth::login($user);
 
