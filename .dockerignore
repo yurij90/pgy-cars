@@ -1,0 +1,13 @@
+/node_modules
+/vendor
+/.git
+/.env
+/npm-debug.log
+/yarn-error.log
+/storage/*.key
+/public/hot
+/public/storage
+/.phpunit.result.cache
+/setup.ps1
+/setup.sh
+/install.ps1
