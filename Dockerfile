@@ -1,28 +1,32 @@
-# 1. stage: Node.js build hivatalos node:20.17-alpine image használatával
+# 1. stage: Node.js 20.19-alpine hivatalos image a buildhez
 FROM node:20.19-alpine as node-builder
 
 WORKDIR /app
 
+# A dependency fájlok másolása és telepítése
 COPY package*.json ./
 RUN npm install
 
+# Kód másolása
 COPY . .
+
+# Build futtatása
 RUN npm run build
 
-# 2. stage: PHP-FPM és Nginx richarvey image
+# 2. stage: PHP-FPM richarvey image
 FROM richarvey/nginx-php-fpm:latest
 
 USER root
 
 WORKDIR /var/www/html
 
-# Projekt fájlok másolása
+# Projekt fájlok másolása, kivéve a node_modules-t és a build fájlokat, amiket a node-builder stage-ből hozunk be
 COPY . .
 
-# A kész assetek átmásolása a node build stage-ből
+# Kész build assetek átmásolása a node-builder stage-ből
 COPY --from=node-builder /app/public/build ./public/build
 
-# Laravel futtatáshoz szükséges parancsok
+# Laravel composer, cache és migrációk
 RUN composer install --no-dev --optimize-autoloader && \
     php artisan key:generate && \
     php artisan config:cache && \
@@ -30,7 +34,7 @@ RUN composer install --no-dev --optimize-autoloader && \
     php artisan migrate --force && \
     php artisan migrate --seed
 
-# Jogok beállítása
+# Jogosultságok beállítása
 RUN chown -R nginx:nginx /var/www/html/storage /var/www/html/bootstrap/cache
 
 CMD ["/start.sh"]
