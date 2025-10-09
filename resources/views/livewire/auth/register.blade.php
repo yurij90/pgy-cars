@@ -24,9 +24,8 @@ class extends Component {
         $originalUsername = strtolower($this->username);
         $hashedUsername = hash('sha256', $originalUsername);
 
-    // Manuálisan ellenőrzöd az egyediséget hash feltétellel
         if(User::where('username', $hashedUsername)->exists()) {
-            $this->addError('username', 'Ez a felhasználónév már foglalt.');
+            $this->addError('username', 'This username is already taken.');
             return;
         }
 
